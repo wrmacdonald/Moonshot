@@ -7,128 +7,54 @@
 
 import SwiftUI
 
-// Hierarchical data with Codable:
-//struct User: Codable {
-//    let name: String
-//    let address: Address
-//}
-//
-//struct Address: Codable {
-//    let street: String
-//    let city: String
-//}
-
-// Scrolling arbitrary data:
-//struct CustomText: View {
-//    let text: String
-//    
-//    var body: some View {
-//        Text(text)
-//    }
-//    
-//    init(text: String) {
-//        print("Creating a new Custom Text")
-//        self.text = text
-//    }
-//}
-
 struct ContentView: View {
-    // How to lay out views in a scrolling grid:
-    let layout = [
-        GridItem(.adaptive(minimum: 80, maximum: 120))
-    ]
-    let layoutHorz = [
-        GridItem(.adaptive(minimum: 20, maximum: 40))
-    ]
+    let astronauts: [String: Astronaut] = Bundle.main.decode("astronauts.json")
+    let missions: [Mission] = Bundle.main.decode("missions.json")
+    
+    let columns = [GridItem(.adaptive(minimum: 150))]
     
     var body: some View {
-        // How to lay out views in a scrolling grid:
-        ScrollView(.vertical) {
-            LazyVGrid(columns: layout) {
-                ForEach(0..<1000) {
-                    Text("Item \($0)")
+        NavigationStack {
+            ScrollView {
+                LazyVGrid(columns: columns) {
+                    ForEach(missions) { mission in
+                        NavigationLink {
+                            Text("Detail view")
+                        } label: {
+                            VStack {
+                                Image(mission.image)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 100)
+                                    .padding()
+                                
+                                VStack {
+                                    Text(mission.displayName)
+                                        .font(.headline)
+                                        .foregroundStyle(.white)
+                                    
+                                    Text(mission.formattedLaunchDate)
+                                        .font(.caption)
+                                        .foregroundStyle(.white.opacity(0.6))
+                                }
+                                .padding(.vertical)
+                                .frame(maxWidth: .infinity)
+                                .background(.lightBackground)
+                            }
+                            .clipShape(.rect(cornerRadius: 10))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(.lightBackground)
+                            )
+                        }
+                    }
                 }
+                .padding([.horizontal, .bottom])
             }
+            .navigationTitle("Moonshot")
+            .background(.darkBackground)
+            .preferredColorScheme(/*@START_MENU_TOKEN@*/.dark/*@END_MENU_TOKEN@*/)
         }
-        ScrollView(.horizontal) {
-            LazyHGrid(rows: layoutHorz) {
-                ForEach(0..<1000) {
-                    Text("Item \($0)")
-                }
-            }
-        }
-        
-        // Hierarchical data with Codable:
-//        Button("Decode JSON") {
-//            let input = """
-//            {
-//                "name": "Taylor Swift",
-//                "address": {
-//                    "street": "555, Taylor Swift Avenue",
-//                    "city": "Nashville"
-//                }
-//            }
-//            """
-//
-//            let data = Data(input.utf8)
-//            let decoder = JSONDecoder()
-//            if let user = try? decoder.decode(User.self, from: data) {
-//                print(user.address.street)
-//            }
-//        }
-        
-        // Add new views to the stack with NavigationLink:
-//        NavigationStack {
-//            NavigationLink {
-//                Text("Detail View")
-//            } label: {
-//                VStack {
-//                    Text("This is the label")
-//                    Image(systemName: "face.smiling")
-//                }
-//                .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
-//            }
-//                .navigationTitle("SwiftUI")
-//        }
-//        NavigationStack {
-//            List(0..<100) { row in
-//                NavigationLink("Row \(row)") {
-//                    Text("Detail \(row)")
-//                }
-//            }
-//            .navigationTitle("SwiftUI")
-//        }
-        
-        
-        // Scrolling arbitrary data:
-//        ScrollView {
-//            LazyVStack(spacing: 20) {       // only create custom Text structs when they're shown on screen, VStack loads them all at once
-//                ForEach(0..<100) {
-//                    CustomText(text: "Item \($0)")
-//                        .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
-//                }
-//            }
-//            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
-//        }
-        
-//        ScrollView(.horizontal) {
-//            LazyHStack(spacing: 20) {
-//                ForEach(0..<100) {
-//                    CustomText(text: "Item \($0)")
-//                        .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
-//                }
-//            }
-//        }
-        
-        
-//        // Resizing images:
-//        Image(.example)
-//            .resizable()
-//            .scaledToFit()
-//            .containerRelativeFrame(.horizontal) { size, axis in
-//                size * 0.8
-//            }   // container relative to its parent
-////            .frame(width: 300, height: 300)     // for a fixed size
     }
 }
 

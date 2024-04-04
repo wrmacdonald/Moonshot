@@ -14,9 +14,7 @@ struct CrewView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
                 ForEach(crew, id: \.role) { crewMember in
-                    NavigationLink {
-                        AstronautView(astronaut: crewMember.astronaut)
-                    } label: {
+                    NavigationLink(value: crewMember) {
                         HStack {
                             Image(crewMember.astronaut.id)
                                 .resizable()
@@ -38,6 +36,9 @@ struct CrewView: View {
                         .padding(.horizontal)
                     }
                 }
+            }
+            .navigationDestination(for: MissionView.CrewMember.self ) { crewMember in
+                AstronautView(astronaut: crewMember.astronaut)
             }
         }
     }
